@@ -16,6 +16,7 @@ from contextlib import asynccontextmanager
 from app.config import get_settings, ensure_storage_directories
 from app.database import init_db
 from app.api import auth_router, upload_router, result_router, history_router
+from app.api.admin import router as admin_router
 
 settings = get_settings()
 
@@ -64,8 +65,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",       # React dev server
+        "http://localhost:3001",       # Vite dev server alt port
         "http://localhost:5173",       # Vite dev server
         "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001",
         "http://127.0.0.1:5173",
         "*"                            # Allow all for development
     ],
@@ -82,6 +85,7 @@ app.include_router(auth_router)
 app.include_router(upload_router)
 app.include_router(result_router)
 app.include_router(history_router)
+app.include_router(admin_router)
 
 
 @app.get("/", tags=["Health"])
