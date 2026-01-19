@@ -153,3 +153,89 @@ async def get_current_user_info(current_user: User = Depends(get_current_user)):
 @router.post("/logout")
 async def logout(current_user: User = Depends(get_current_user)):
     return {"message": "Successfully logged out", "user_id": current_user.id}
+
+
+# ============================================================================
+# Admin Endpoints
+# ============================================================================
+
+def require_admin(current_user: User = Depends(get_current_user)):
+    """Dependency to check if user is admin"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    return current_user
+
+
+@router.get("/users", response_model=list[UserResponse])
+async def get_all_users(
+    admin: User = Depends(require_admin),
+    db: Session = Depends(get_db)
+):
+    """Get all users (Admin only)"""
+    users = db.query(User).all()
+    return users
+
+
+@router.patch("/users/{user_id}/role")
+async def update_user_role(
+    user_id: str,
+    role: UserRole,
+    admin: User = Depends(require_admin),
+    db: Session = Depends(get_db)
+):
+    """Update user role (Admin only)"""
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user.role = role
+    db.commit()
+    db.refresh(user)
+    return {"message": f"User role updated to {role.value}", "user": UserResponse.model_validate(user)}
+
+
+@router.delete("/users/{user_id}")
+async def delete_user(
+    user_id: str,
+    admin: User = Depends(require_admin),
+    db: Session = Depends(get_db)
+):
+    """Delete a user (Admin only)"""
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.id == admin.id:
+        raise HTTPException(status_code=400, detail="Cannot delete yourself")
+    
+    db.delete(user)
+    db.commit()
+    return {"message": "User deleted successfully"}
+
+
+@router.post("/make-admin/{email}")
+async def make_first_admin(email: str, db: Session = Depends(get_db)):
+    """
+    Make a user admin by email.
+    Only works if there are no admins in the system (for initial setup).
+    """
+    # Check if any admin exists
+    existing_admin = db.query(User).filter(User.role == UserRole.ADMIN).first()
+    if existing_admin:
+        raise HTTPException(
+            status_code=403,
+            detail="Admin already exists. Use the admin panel to manage roles."
+        )
+    
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user.role = UserRole.ADMIN
+    db.commit()
+    db.refresh(user)
+    return {"message": f"{email} is now an admin!", "user": UserResponse.model_validate(user)}
+
