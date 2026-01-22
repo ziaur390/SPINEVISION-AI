@@ -12,6 +12,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
+import bcrypt
+
+# Hack to fix passlib 1.7.4 issue with bcrypt 4.0+
+if not hasattr(bcrypt, "__about__"):
+    class About:
+        __version__ = bcrypt.__version__
+    bcrypt.__about__ = About()
 
 from app.config import get_settings, ensure_storage_directories
 from app.database import init_db
