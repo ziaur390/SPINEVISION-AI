@@ -78,6 +78,8 @@ app.add_middleware(
 )
 
 # Mount static files for storage access
+import os
+os.makedirs("storage", exist_ok=True)
 app.mount("/storage", StaticFiles(directory="storage"), name="storage")
 
 # Include API routers
