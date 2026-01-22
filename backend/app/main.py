@@ -8,11 +8,13 @@ This is the main entry point for the FastAPI backend.
 Run with: uvicorn app.main:app --reload
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 import bcrypt
+import traceback
 
 # Hack to fix passlib 1.7.4 issue with bcrypt 4.0+
 if not hasattr(bcrypt, "__about__"):
@@ -30,11 +32,7 @@ settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Application lifespan handler.
-    Runs on startup and shutdown.
-    """
-    # Startup
+    # ... existing lifespan code ...
     print("\n" + "=" * 50)
     print("🦴 SPINEVISION-AI Backend Starting...")
     print("=" * 50)
@@ -66,6 +64,17 @@ app = FastAPI(
     redoc_url="/redoc",
     openapi_url="/openapi.json"
 )
+
+# DEBUG: Global Exception Handler to see 500 errors
+@app.exception_handler(Exception)
+async def debug_exception_handler(request: Request, exc: Exception):
+    error_msg = f"{type(exc).__name__}: {str(exc)}\n{traceback.format_exc()}"
+    print(error_msg) # Log to console
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal Server Error", "debug_error": error_msg}
+    )
+
 
 # Configure CORS for frontend access
 app.add_middleware(
