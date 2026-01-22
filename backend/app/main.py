@@ -8,19 +8,16 @@ This is the main entry point for the FastAPI backend.
 Run with: uvicorn app.main:app --reload
 """
 
+# ... imports ...
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
-import bcrypt
 import traceback
+import os
 
-# Hack to fix passlib 1.7.4 issue with bcrypt 4.0+
-if not hasattr(bcrypt, "__about__"):
-    class About:
-        __version__ = bcrypt.__version__
-    bcrypt.__about__ = About()
+# (Removed bcrypt patch as we use Argon2 now)
 
 from app.config import get_settings, ensure_storage_directories
 from app.database import init_db
@@ -29,28 +26,16 @@ from app.api.admin import router as admin_router
 
 settings = get_settings()
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # ... existing lifespan code ...
+   # ... (keep existing lifespan code) ...
     print("\n" + "=" * 50)
     print("🦴 SPINEVISION-AI Backend Starting...")
     print("=" * 50)
-    
-    # Ensure storage directories exist
     ensure_storage_directories()
-    
-    # Initialize database
     init_db()
-    
     print("\n✅ Backend ready!")
-    print(f"📍 API Docs: http://localhost:{settings.PORT}/docs")
-    print(f"📍 ReDoc: http://localhost:{settings.PORT}/redoc")
-    print("=" * 50 + "\n")
-    
     yield
-    
-    # Shutdown
     print("\n🛑 SPINEVISION-AI Backend Shutting down...")
 
 
@@ -64,6 +49,45 @@ app = FastAPI(
     redoc_url="/redoc",
     openapi_url="/openapi.json"
 )
+
+# DEBUG ENDPOINT
+@app.get("/debug/diagnose")
+async def diagnose_system():
+    results = {}
+    
+    # 1. Test Disk Write (Database simulation)
+    try:
+        with open("test_write.txt", "w") as f:
+            f.write("test")
+        os.remove("test_write.txt")
+        results["disk_write"] = "OK"
+    except Exception as e:
+        results["disk_write"] = f"FAIL: {str(e)}"
+
+    # 2. Test Password Hashing (Argon2)
+    try:
+        from passlib.context import CryptContext
+        pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+        hash = pwd_context.hash("testpassword")
+        results["hashing"] = "OK"
+    except Exception as e:
+        results["hashing"] = f"FAIL: {str(e)}"
+        results["hashing_trace"] = traceback.format_exc()
+
+    # 3. Test Storage Dir
+    try:
+        if os.path.exists("storage"):
+            results["storage_dir"] = "Exists"
+        else:
+            results["storage_dir"] = "Missing (will create)"
+            os.makedirs("storage", exist_ok=True)
+    except Exception as e:
+        results["storage_dir"] = f"FAIL: {str(e)}"
+
+    return results
+
+@app.exception_handler(Exception)
+# ... (keep existing handler) ...
 
 # DEBUG: Global Exception Handler to see 500 errors
 @app.exception_handler(Exception)
