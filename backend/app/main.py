@@ -64,17 +64,16 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",       # React dev server
-        "http://localhost:3001",       # Vite dev server alt port
-        "http://localhost:5173",       # Vite dev server
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://localhost:5173",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:3001",
         "http://127.0.0.1:5173",
-        "https://spinevision-ai.vercel.app",  # Previously guessed
-        "https://spinevision-app.vercel.app", # ACTUAL from error log
-        "*"                            # Allow all for development
+        "https://spinevision-ai.vercel.app",
+        "https://spinevision-app.vercel.app"
     ],
-    allow_origin_regex="https://.*\.vercel\.app",  # Allow any Vercel preview URL
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
