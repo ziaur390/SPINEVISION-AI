@@ -39,7 +39,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
     
     # File Storage Configuration
-    BASE_DIR: Path = Path(__file__).resolve().parent.parent
+    # Use current working directory to ensure compatibility with Render/Production
+    BASE_DIR: Path = Path.cwd()
     STORAGE_DIR: Path = BASE_DIR / "storage"
     UPLOAD_DIR: Path = STORAGE_DIR / "uploads"
     HEATMAP_DIR: Path = STORAGE_DIR / "heatmaps"
