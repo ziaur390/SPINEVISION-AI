@@ -121,8 +121,9 @@ app.add_middleware(
 
 # Mount static files for storage access
 import os
-os.makedirs("storage", exist_ok=True)
-app.mount("/storage", StaticFiles(directory="storage"), name="storage")
+# Ensure directory exists using the configured path
+os.makedirs(settings.STORAGE_DIR, exist_ok=True)
+app.mount("/storage", StaticFiles(directory=str(settings.STORAGE_DIR)), name="storage")
 
 # Include API routers
 app.include_router(auth_router)
