@@ -70,8 +70,10 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "http://127.0.0.1:3001",
         "http://127.0.0.1:5173",
+        "https://spinevision-ai.vercel.app", # Vercel production
         "*"                            # Allow all for development
     ],
+    allow_origin_regex="https://.*\.vercel\.app",  # Allow any Vercel preview URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
