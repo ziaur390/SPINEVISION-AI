@@ -1,3 +1,6 @@
+# Install backend as a package
+-e ./backend
+
 # FastAPI and Server
 fastapi>=0.109.0
 uvicorn>=0.27.0
