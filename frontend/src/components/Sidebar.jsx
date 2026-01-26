@@ -40,7 +40,7 @@ const Sidebar = () => {
     ];
 
     return (
-        <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white border-r border-gray-100 flex flex-col">
+        <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white border-r border-gray-100 hidden md:flex flex-col">
             {/* Navigation */}
             <nav className="flex-1 p-4 space-y-1">
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-3">

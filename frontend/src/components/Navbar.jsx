@@ -39,7 +39,17 @@ const Navbar = () => {
 
                     {/* Right side */}
                     <div className="flex items-center gap-3">
-                        {/* Quick Upload Button */}
+                        {/* Quick Upload Button - Mobile (Icon Only) */}
+                        <Link
+                            to="/upload"
+                            className="md:hidden flex items-center justify-center p-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg hover:from-teal-700 hover:to-cyan-700 transition-all shadow-sm"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                        </Link>
+
+                        {/* Quick Upload Button - Desktop (Full) */}
                         <Link
                             to="/upload"
                             className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white text-sm font-medium rounded-lg hover:from-teal-700 hover:to-cyan-700 transition-all shadow-sm"

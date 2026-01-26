@@ -106,7 +106,7 @@ const Upload = () => {
             <Navbar />
             <Sidebar />
 
-            <main className="ml-64 pt-16 p-8">
+            <main className="md:ml-64 pt-16 p-6">
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-800">Upload X-ray</h1>
@@ -132,8 +132,8 @@ const Upload = () => {
                         {!file && (
                             <div
                                 className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all ${isDragging
-                                        ? 'border-teal-500 bg-teal-50'
-                                        : 'border-gray-200 hover:border-teal-400 hover:bg-gray-50'
+                                    ? 'border-teal-500 bg-teal-50'
+                                    : 'border-gray-200 hover:border-teal-400 hover:bg-gray-50'
                                     }`}
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
@@ -178,7 +178,7 @@ const Upload = () => {
                         {/* File Preview */}
                         {file && (
                             <div className="space-y-6">
-                                <div className="flex gap-6">
+                                <div className="flex flex-col md:flex-row gap-6">
                                     {/* Preview Image */}
                                     <div className="w-64 h-64 bg-gray-900 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg">
                                         {preview ? (

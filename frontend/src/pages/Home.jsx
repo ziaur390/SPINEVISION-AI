@@ -3,11 +3,16 @@
  * Public landing page with hero, features, and blog section
  */
 
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 const Home = () => {
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    // ... existing data arrays ...
     const features = [
+        // ... keep existing features ...
         {
             icon: '🧠',
             title: 'AI-Powered Analysis',
@@ -74,12 +79,15 @@ const Home = () => {
                             <img src={logo} alt="SpineVision AI" className="h-10 w-auto" />
                             <span className="text-xl font-bold text-gray-800">SPINEVISION AI</span>
                         </Link>
+
+                        {/* Desktop Menu */}
                         <div className="hidden md:flex items-center gap-8">
                             <a href="#features" className="text-gray-600 hover:text-teal-600 transition-colors">Features</a>
                             <a href="#blog" className="text-gray-600 hover:text-teal-600 transition-colors">Blog</a>
                             <a href="#about" className="text-gray-600 hover:text-teal-600 transition-colors">About</a>
                         </div>
-                        <div className="flex items-center gap-3">
+
+                        <div className="hidden md:flex items-center gap-3">
                             <Link to="/login" className="px-4 py-2 text-teal-600 font-medium hover:text-teal-700 transition-colors">
                                 Sign In
                             </Link>
@@ -87,8 +95,40 @@ const Home = () => {
                                 Get Started
                             </Link>
                         </div>
+
+                        {/* Mobile Menu Button */}
+                        <button
+                            className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                {mobileMenuOpen ? (
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                ) : (
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                )}
+                            </svg>
+                        </button>
                     </div>
                 </div>
+
+                {/* Mobile Menu Overlay */}
+                {mobileMenuOpen && (
+                    <div className="md:hidden bg-white border-b border-gray-100 px-6 py-4 shadow-lg absolute w-full">
+                        <div className="flex flex-col gap-4">
+                            <a href="#features" className="text-gray-600 py-2 hover:text-teal-600" onClick={() => setMobileMenuOpen(false)}>Features</a>
+                            <a href="#blog" className="text-gray-600 py-2 hover:text-teal-600" onClick={() => setMobileMenuOpen(false)}>Blog</a>
+                            <a href="#about" className="text-gray-600 py-2 hover:text-teal-600" onClick={() => setMobileMenuOpen(false)}>About</a>
+                            <hr className="border-gray-100" />
+                            <Link to="/login" className="text-teal-600 font-medium py-2 text-center" onClick={() => setMobileMenuOpen(false)}>
+                                Sign In
+                            </Link>
+                            <Link to="/register" className="px-5 py-3 bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-medium rounded-lg text-center shadow-lg shadow-teal-200" onClick={() => setMobileMenuOpen(false)}>
+                                Get Started
+                            </Link>
+                        </div>
+                    </div>
+                )}
             </nav>
 
             {/* Hero Section */}

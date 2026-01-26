@@ -107,7 +107,7 @@ const Dashboard = () => {
             <Sidebar />
 
             {/* Main Content */}
-            <main className="ml-64 pt-16 p-8">
+            <main className="md:ml-64 pt-16 p-6">
                 {/* Welcome Header */}
                 <div className="mb-8">
                     <div className="flex items-center justify-between">
@@ -256,8 +256,8 @@ const Dashboard = () => {
                                                 <div className="flex items-center gap-3">
                                                     {scan.overall_classification && (
                                                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${scan.overall_classification.includes('Normal')
-                                                                ? 'bg-green-100 text-green-700'
-                                                                : 'bg-orange-100 text-orange-700'
+                                                            ? 'bg-green-100 text-green-700'
+                                                            : 'bg-orange-100 text-orange-700'
                                                             }`}>
                                                             {scan.overall_classification.includes('Normal') ? 'Normal' : 'Abnormal'}
                                                         </span>

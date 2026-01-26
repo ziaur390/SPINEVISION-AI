@@ -92,7 +92,7 @@ const History = () => {
             <Sidebar />
 
             {/* Main Content */}
-            <main className="ml-64 pt-16 p-8">
+            <main className="md:ml-64 pt-16 p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8 animate-fade-in">
                     <div>
