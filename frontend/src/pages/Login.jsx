@@ -204,7 +204,7 @@ const Login = () => {
 
                     {/* Footer */}
                     <p className="text-center text-sm text-gray-400 mt-8">
-                        © 2024 SPINEVISION-AI • Medical Professional Access Only
+                        © 2026 SPINEVISION-AI • Medical Professional Access Only
                     </p>
                 </div>
             </div>

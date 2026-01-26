@@ -2,110 +2,108 @@
 marp: true
 theme: default
 paginate: true
+style: |
+  section {
+    background-color: white;
+    font-family: 'Arial', sans-serif;
+    padding: 40px;
+  }
+  h1 {
+    color: #2b6cb0;
+  }
+  h2 {
+    color: #2c5282;
+  }
+  strong {
+    color: #e53e3e;
+  }
+
 ---
 
+<!-- Slide 1: Thesis Title & Team -->
 # SPINEVISION-AI
 ## AI-Based Spine Disease Detection & Analysis
 
-**Final Year Project (FYP-I) Progress Presentation**
+**Final Year Project (FYP-I) Progress**
 
----
+### 👥 Team Members
+*   **Imad Ud Din**
+*   **Hammad Ali Khan**
+*   **Zia Ur Rahman**
 
-## 👥 Team & Supervisor
-
-**Group Members:**
-1.  **Imad Ud Din**
-2.  **Hammad Ali Khan**
-3.  **Zia Ur Rahman**
-
-**Supervisor:**
+### 👨‍🏫 Supervisor
 *   **Dr. Suhaib Qureshi**
 
 ---
 
-## 📌 Problem Statement
+<!-- Slide 2: Problem & Motivation -->
+## 📌 Problem Statement & Motivation
 
-*   **Manual Diagnosis:** Analyzing spine X-rays is time-consuming and prone to human error.
-*   **Complexity:** Subtle conditions (e.g., early disc narrowing) can be missed.
-*   **Resource Gap:** Shortage of expert radiologists leads to delayed reports.
+### The Challenge
+*   **Manual Diagnosis:** Analyzing spine X-rays is time-consuming and prone to human error (fatigue/subjectivity).
+*   **Subtle Pathologies:** Early signs of disc narrowing or spondylolisthesis are easily missed.
+*   **Radiologist Shortage:** High patient volume vs. limited experts leads to delayed treatments.
 
-**Our Solution:**
-An automated, AI-powered web application that assists doctors by detecting spinal diseases and visualizing affected areas.
-
----
-
-## 🎯 Objectives
-
-1.  **Automated Detection:** Classify multiple spinal conditions (e.g., Spondylolisthesis, Disc Narrowing) from X-ray images.
-2.  **Visual Explanations:** Generate heatmaps to show *where* the AI detected the issue (Explainable AI).
-3.  **Report Generation:** Automatically generate professional PDF diagnostic reports.
-4.  **User Management:** Secure portal for doctors to manage patient history.
+### Our Motivation
+To assist radiologists—not replace them—by providing a **Second Opinion System** that ensures:
+*   ⚡ **Speed:** Instant analysis.
+*   🎯 **Accuracy:** AI-driven detection.
+*   📄 **Automation:** Auto-generated diagnostic reports.
 
 ---
 
-## 🛠️ Methodology & Tech Stack
+<!-- Slide 3: Previous Evaluation -->
+## 📝 Previous Evaluation Comments
 
-**Architecture:**
-*   **Frontend:** React.js (User Interface)
-*   **Backend:** FastAPI (Python)
-*   **AI Engine:** PyTorch / TensorFlow
-*   **Database:** SQLite / PostgreSQL
+*   **Dataset Scope:** "Clarify the source and size of the dataset; ensure it covers local demographics if possible."
+*   **Model Validation:** "Need robust metrics beyond just accuracy (e.g., F1-score, Recall)."
+*   **Real-world Applicability:** "How will this integrate into a doctor's actual workflow?"
+*   **Data Imbalance:** "Address how the system handles rare diseases vs. common ones."
 
-**Workflow:**
-1.  Doctor logs in & uploads X-ray.
-2.  Backend pre-processes image.
-3.  AI Model analyzes & generates probability scores.
-4.  System generates heatmap & PDF report.
-5.  Doctor reviews & downloads results.
+*(Note: These points address the supervisor's earlier feedback on data and practical usage)*
 
 ---
 
-## 📊 Current Progress (FYP-I Status)
+<!-- Slide 4: Progress & Addressed Issues -->
+## 🚀 Progress & Addressed Issues
 
-### 1. **Backend Development (Completed)**
-*   ✅ **FastAPI Server:** Fully operational.
-*   ✅ **Authentication:** Secure Login/Register (JWT).
-*   ✅ **File Handling:** Upload/Storage system customized for medical images.
-*   ✅ **Reporting Module:** PDF generation engine integrated.
+### ✅ Current Status
+*   **Authentication & Backend:** Fully functional (FastAPI/JWT).
+*   **Deployment:** Initial deployment pipeline established.
+*   **Report Generation:** working prototype using **RAG (Retrieval-Augmented Generation)**.
 
-### 2. **Dataset & ML Model (In Progress)**
-*   🔄 **Data Collection:** Currently curating a dataset of labeled spine X-rays (RSNA/MURA datasets).
-*   🔄 **Preprocessing:** Implementing contrast enhancement and resizing pipelines.
-*   🔄 **Model Implementation:** defining initial CNN architecture for classification.
-
-### 3. **Frontend (Initial Setup)**
-*   ✅ **Environment:** React + Vite project initialized.
-*   ✅ **Design:** Minimalist Blue/Indigo medical theme selected.
-
----
-
-## 🖼️ System Demo (Backend Capabilities)
-
-*(Speaker Note: You can explain these features as "Ready" and "Tested")*
-
-*   **Secure API:** All endpoints are protected and tested via Swagger UI.
-*   **Upload Pipeline:** formatting checks (DICOM/PNG) implemented.
-*   **History Tracking:** Database creates logs for every analysis.
+### 🚧 Challenges & Solutions
+1.  **Data Imbalance:**
+    *   *Issue:* Uneven distribution of disease classes in RSNA/MURA datasets.
+    *   *Solution:* Applying **Data Augmentation** and class weighting mechanisms.
+2.  **Model Selection:**
+    *   **U-Net:** Employed for precise segmentation of spinal vertebrae.
+    *   **DenseNet:** Utilized for high-accuracy disease classification.
+3.  **Data Strategy:** actively curating a balanced subset under Dr. Qureshi's guidance.
 
 ---
 
-## 📅 Future Work (FYP-II Plan)
+<!-- Slide 5: Timeline -->
+## 📅 Timeline (8th Semester)
 
-1.  **Train Final Model:** Achieve high accuracy (>90%) on the custom dataset.
-2.  **Frontend Integration:** Connect the React UI to the Python Backend.
-3.  **Deployment:** Host the application on a cloud platform.
-4.  **Testing:** Clinical validation with real X-ray samples.
-
----
-
-## 🔚 Conclusion
-
-*   **SPINEVISION-AI** is on track to provide a valuable tool for radiologists.
-*   **Foundation laid:** Robust backend and architecture are ready.
-*   **Next Focus:** Intensive ML training and UI development.
+| Phase | Timeline | Key Activities |
+| :--- | :--- | :--- |
+| **Phase 1** | **Feb - Mar** | • Train & Fine-tune **U-Net** & **DenseNet** models<br>• Address data imbalance with synthetic data |
+| **Phase 2** | **April** | • Full Frontend (**React**) integration with Backend<br>• Refine **RAG** report engine |
+| **Phase 3** | **May** | • System Testing & Validation<br>• Final Cloud Deployment |
+| **Phase 4** | **June** | • Final Thesis Writing<br>• Project Defense Preparation |
 
 ---
 
-## ❓ Q & A
+<!-- Slide 6: Deliverables -->
+## 📦 Deliverables & Outcomes
 
-**Thank You!**
+Upon completion, **SPINEVISION-AI** will deliver:
+
+1.  **Web-Based Platform:** A fully responsive diagnostic portal for doctors.
+2.  **AI Engine:** Trained weights for **U-Net** (Segmentation) and **DenseNet** (Classification).
+3.  **Automated Reporting:** PDF reports generated via RAG technology.
+4.  **Documentation:** Complete Thesis Report and API Documentation.
+5.  **Source Code:** GitHub repository with deployment scripts.
+
+---
