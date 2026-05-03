@@ -135,7 +135,7 @@ npm run dev
 
 | Service | Platform | URL |
 |---------|----------|-----|
-| Frontend | Netlify | Auto-deploys from GitHub |
+| Frontend | vercel | Auto-deploys from GitHub |
 | Backend API | Render | Auto-deploys from `spinevision-api` repo |
 | ML Models | HuggingFace Spaces | Docker-based GPU/CPU inference |
 
