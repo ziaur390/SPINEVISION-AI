@@ -130,6 +130,16 @@ The frontend auto-deploys from the GitHub repo. The `netlify.toml` handles SPA r
   status = 200
 ```
 
+## 👥 Team
+
+| Name | Role |
+|------|------|
+| Zia Ur Rahman | Team Member |
+| Hammad Ali Khan | Team Member |
+| Imad Ud Din | Team Member |
+
+**Supervisor:** Dr. Suhaib Qureshi
+
 ---
 
 **SPINEVISION-AI Frontend** — Professional medical UI for intelligent diagnostics 🦴🎨

@@ -420,6 +420,9 @@ const Home = () => {
                     </div>
                     <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
                         <p>© 2026 SPINEVISION AI. All rights reserved.</p>
+                        <p className="text-sm text-gray-500 mt-2">
+                            Built by Zia Ur Rahman, Hammad Ali Khan & Imad Ud Din • Supervised by Dr. Suhaib Qureshi
+                        </p>
                     </div>
                 </div>
             </footer>

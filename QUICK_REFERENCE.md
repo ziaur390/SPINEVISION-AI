@@ -173,4 +173,16 @@ pip freeze > requirements.txt
 
 ---
 
+## 👥 Team
+
+| Name | Role |
+|------|------|
+| Zia Ur Rahman | Team Member |
+| Hammad Ali Khan | Team Member |
+| Imad Ud Din | Team Member |
+
+**Supervisor:** Dr. Suhaib Qureshi
+
+---
+
 *Keep this card handy for quick reference! Last updated: May 2026*

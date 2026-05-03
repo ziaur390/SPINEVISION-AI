@@ -264,6 +264,16 @@ curl -X POST "http://localhost:8000/upload" \
   -F "file=@spine_xray.png"
 ```
 
+## 👥 Team
+
+| Name | Role |
+|------|------|
+| Zia Ur Rahman | Team Member |
+| Hammad Ali Khan | Team Member |
+| Imad Ud Din | Team Member |
+
+**Supervisor:** Dr. Suhaib Qureshi
+
 ---
 
 **SPINEVISION-AI Backend** — Powering intelligent spine diagnostics 🦴⚡
