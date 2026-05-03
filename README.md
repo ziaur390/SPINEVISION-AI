@@ -139,14 +139,7 @@ npm run dev
 | Backend API | Render | Auto-deploys from `spinevision-api` repo |
 | ML Models | HuggingFace Spaces | Docker-based GPU/CPU inference |
 
-### Environment Variables (Backend - Render)
 
-```env
-DATABASE_URL=postgresql://...
-SECRET_KEY=<jwt-secret>
-GEMINI_API_KEY=<google-ai-studio-key>
-HF_SPACE_URL=https://ziaur390-spinevision-ml-api.hf.space
-```
 
 ## 📡 API Endpoints
 
