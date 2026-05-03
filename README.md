@@ -2,7 +2,7 @@
 
 > **AI-Powered Spine Disease Detection System** — A full-stack medical imaging platform for automated spinal X-ray analysis using deep learning.
 
-[![Live Demo](https://img.shields.io/badge/Live-Frontend-teal)](https://spinevision-app.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live-Frontend-teal)](https://spinevision-ai.vercel.app//)
 [![API](https://img.shields.io/badge/API-Render-blue)](https://spinevision-api.onrender.com)
 [![ML Service](https://img.shields.io/badge/ML-HuggingFace-yellow)](https://huggingface.co/spaces/ziaur390/spinevision-ml-api)
 
