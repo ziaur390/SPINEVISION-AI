@@ -41,7 +41,43 @@ const Upload = () => {
         handleFile(selectedFile);
     };
 
-    const handleFile = (selectedFile) => {
+    const validateGrayscale = (file) => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                const sampleCount = 200;
+                let coloredPixels = 0;
+                const threshold = 15;
+
+                for (let i = 0; i < sampleCount; i++) {
+                    const x = Math.floor(Math.random() * img.width);
+                    const y = Math.floor(Math.random() * img.height);
+                    const [r, g, b] = ctx.getImageData(x, y, 1, 1).data;
+
+                    if (
+                        Math.abs(r - g) > threshold ||
+                        Math.abs(r - b) > threshold ||
+                        Math.abs(g - b) > threshold
+                    ) {
+                        coloredPixels++;
+                    }
+                }
+
+                const coloredRatio = coloredPixels / sampleCount;
+                resolve(coloredRatio <= 0.10);
+            };
+            img.onerror = () => resolve(true); // allow on error (e.g. DICOM)
+            img.src = URL.createObjectURL(file);
+        });
+    };
+
+    const handleFile = async (selectedFile) => {
         setError('');
 
         if (!selectedFile) return;
@@ -57,6 +93,15 @@ const Upload = () => {
         if (selectedFile.size > 50 * 1024 * 1024) {
             setError('File size must be less than 50MB');
             return;
+        }
+
+        // Grayscale validation for standard image types
+        if (selectedFile.type.startsWith('image/')) {
+            const isGrayscale = await validateGrayscale(selectedFile);
+            if (!isGrayscale) {
+                setError('Invalid image detected. Please upload a grayscale spinal X-ray image, not a colored photograph.');
+                return;
+            }
         }
 
         setFile(selectedFile);
