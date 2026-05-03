@@ -83,6 +83,7 @@ const Home = () => {
                         {/* Desktop Menu */}
                         <div className="hidden md:flex items-center gap-8">
                             <a href="#features" className="text-gray-600 hover:text-teal-600 transition-colors">Features</a>
+                            <a href="#how-it-works" className="text-gray-600 hover:text-teal-600 transition-colors">How It Works</a>
                             <a href="#blog" className="text-gray-600 hover:text-teal-600 transition-colors">Blog</a>
                             <a href="#about" className="text-gray-600 hover:text-teal-600 transition-colors">About</a>
                         </div>
@@ -117,6 +118,7 @@ const Home = () => {
                     <div className="md:hidden bg-white border-b border-gray-100 px-6 py-4 shadow-lg absolute w-full">
                         <div className="flex flex-col gap-4">
                             <a href="#features" className="text-gray-600 py-2 hover:text-teal-600" onClick={() => setMobileMenuOpen(false)}>Features</a>
+                            <a href="#how-it-works" className="text-gray-600 py-2 hover:text-teal-600" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
                             <a href="#blog" className="text-gray-600 py-2 hover:text-teal-600" onClick={() => setMobileMenuOpen(false)}>Blog</a>
                             <a href="#about" className="text-gray-600 py-2 hover:text-teal-600" onClick={() => setMobileMenuOpen(false)}>About</a>
                             <hr className="border-gray-100" />
@@ -223,6 +225,50 @@ const Home = () => {
                 </div>
             </section>
 
+            {/* How It Works Section */}
+            <section id="how-it-works" className="py-20 px-6 bg-gray-50">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                            How It Works
+                        </h2>
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                            Three simple steps from X-ray upload to clinical recommendation
+                        </p>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {[
+                            {
+                                step: '01',
+                                title: 'Upload X-ray',
+                                description: 'Upload a grayscale spine X-ray image through our secure drag-and-drop interface.',
+                                gradient: 'from-teal-500 to-cyan-500',
+                            },
+                            {
+                                step: '02',
+                                title: 'AI Analysis',
+                                description: 'DenseNet-121 classifies the image while YOLOv9 localizes abnormal regions and generates heatmaps.',
+                                gradient: 'from-blue-500 to-indigo-500',
+                            },
+                            {
+                                step: '03',
+                                title: 'Get Results',
+                                description: 'Receive detailed findings, AI-generated heatmaps, clinical recommendations by Gemini, and a downloadable PDF report.',
+                                gradient: 'from-purple-500 to-pink-500',
+                            },
+                        ].map((item) => (
+                            <div key={item.step} className="relative bg-white rounded-2xl p-8 border border-gray-100 hover:shadow-xl transition-all text-center group">
+                                <div className={`w-16 h-16 bg-gradient-to-br ${item.gradient} rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg`}>
+                                    {item.step}
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
+                                <p className="text-gray-600">{item.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             {/* Blog Section */}
             <section id="blog" className="py-20 px-6 bg-gray-50">
                 <div className="max-w-7xl mx-auto">
@@ -286,9 +332,9 @@ const Home = () => {
                                 unprecedented accuracy and speed.
                             </p>
                             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                                Our deep learning models are trained on extensive datasets of spine X-rays,
-                                enabling detection of conditions like disc narrowing, spondylolisthesis,
-                                degenerative changes, and more.
+                                Our dual-model architecture uses DenseNet-121 for whole-image classification
+                                and YOLOv9 for region-level localization, enabling detection of disc space narrowing,
+                                osteophytes, and surgical implants with AI-generated heatmaps and clinical recommendations.
                             </p>
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="flex items-center gap-3">

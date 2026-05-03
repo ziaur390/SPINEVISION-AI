@@ -136,6 +136,12 @@ const Register = () => {
                     {/* Form Card */}
                     <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
                         <div className="text-center mb-8">
+                            <Link to="/" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-teal-600 transition-colors mb-4">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                </svg>
+                                Back to Home
+                            </Link>
                             <h2 className="text-2xl font-bold text-gray-800">Create Account</h2>
                             <p className="text-gray-500 mt-2">Register as a medical professional</p>
                         </div>
@@ -327,7 +333,7 @@ const Register = () => {
 
                     {/* Footer */}
                     <p className="text-center text-sm text-gray-400 mt-8">
-                        © 2024 SPINEVISION-AI • Medical Professional Access Only
+                        © 2026 SPINEVISION-AI • Medical Professional Access Only
                     </p>
                 </div>
             </div>

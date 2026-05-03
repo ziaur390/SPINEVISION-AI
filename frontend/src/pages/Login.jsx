@@ -118,6 +118,12 @@ const Login = () => {
                     {/* Form Card */}
                     <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
                         <div className="text-center mb-8">
+                            <Link to="/" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-teal-600 transition-colors mb-4">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                </svg>
+                                Back to Home
+                            </Link>
                             <h2 className="text-2xl font-bold text-gray-800">Welcome Back</h2>
                             <p className="text-gray-500 mt-2">Sign in to access your dashboard</p>
                         </div>
