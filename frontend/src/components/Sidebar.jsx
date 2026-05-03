@@ -40,6 +40,7 @@ const Sidebar = () => {
     ];
 
     return (
+        <>
         <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white border-r border-gray-100 hidden md:flex flex-col">
             {/* Navigation */}
             <nav className="flex-1 p-4 space-y-1">
@@ -83,16 +84,38 @@ const Sidebar = () => {
                         </div>
                     </div>
                     <p className="text-xs text-gray-400 leading-relaxed">
-                        Deep learning model ready to analyze spine X-rays
+                        DenseNet-121 + YOLOv9 dual-model pipeline
                     </p>
                 </div>
 
                 {/* Version */}
                 <p className="text-xs text-gray-400 text-center mt-4">
-                    SPINEVISION-AI v1.0
+                    SPINEVISION-AI v2.0
                 </p>
             </div>
         </aside>
+
+            {/* Mobile Bottom Navigation */}
+            <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40 shadow-lg">
+                <div className="flex items-center justify-around h-16">
+                    {navItems.map((item) => (
+                        <NavLink
+                            key={item.path}
+                            to={item.path}
+                            className={({ isActive }) =>
+                                `flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all ${isActive
+                                    ? 'text-teal-600'
+                                    : 'text-gray-400 hover:text-gray-600'
+                                }`
+                            }
+                        >
+                            {item.icon}
+                            <span className="text-[10px] font-medium">{item.name}</span>
+                        </NavLink>
+                    ))}
+                </div>
+            </nav>
+        </>
     );
 };
 
