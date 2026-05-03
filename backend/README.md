@@ -1,52 +1,54 @@
 # SPINEVISION-AI Backend
 
-> AI-Based Spine Disease Detection Web Application
+> FastAPI-based backend for the AI Spine Disease Detection System
 
 ## 🏥 Overview
 
-SPINEVISION-AI is a medical AI application that allows doctors to upload spine X-ray images and receive AI-assisted analysis, including:
-
-- Disease probability scores
-- Visual heatmaps highlighting areas of concern
-- Downloadable PDF diagnostic reports
-- Complete upload and analysis history
+The backend handles authentication, image processing orchestration, AI inference coordination, clinical recommendation generation, PDF report creation, and data persistence for the SPINEVISION-AI platform.
 
 ## 🛠 Technology Stack
 
-- **Framework**: FastAPI (Python)
-- **Database**: SQLAlchemy ORM with SQLite (PostgreSQL supported)
-- **Authentication**: JWT-based with bcrypt password hashing
-- **Server**: Uvicorn ASGI
-- **PDF Generation**: ReportLab
-- **Image Processing**: Pillow, NumPy
+| Component | Technology |
+|-----------|-----------|
+| **Framework** | FastAPI (Python 3.9+) |
+| **Database** | PostgreSQL (prod) / SQLite (dev) via SQLAlchemy ORM |
+| **Authentication** | JWT (python-jose) + bcrypt password hashing |
+| **ML Inference** | HuggingFace Spaces API (DenseNet-121 + YOLOv9) |
+| **AI Recommendations** | Google Gemini 2.0 Flash API |
+| **PDF Reports** | ReportLab |
+| **Image Processing** | Pillow, NumPy |
+| **Server** | Uvicorn ASGI |
+| **Deployment** | Render (free tier) |
 
 ## 📁 Project Structure
 
 ```
 backend/
 ├── app/
-│   ├── main.py              # FastAPI application entry point
-│   ├── config.py            # Configuration and settings
+│   ├── main.py                 # FastAPI app + DB migrations
+│   ├── config.py               # Settings (env vars)
 │   │
 │   ├── database/
-│   │   ├── db.py            # Database connection
-│   │   └── models.py        # SQLAlchemy models
+│   │   ├── db.py               # SQLAlchemy engine + session
+│   │   └── models.py           # User, Upload, Result models
 │   │
 │   ├── api/
-│   │   ├── auth.py          # Authentication endpoints
-│   │   ├── upload.py        # Image upload endpoints
-│   │   ├── result.py        # Result retrieval endpoints
-│   │   └── history.py       # History endpoints
+│   │   ├── auth.py             # Register, login, JWT, /me
+│   │   ├── upload.py           # X-ray upload → full analysis pipeline
+│   │   ├── result.py           # Get results, heatmap, PDF download
+│   │   ├── history.py          # Paginated history + statistics
+│   │   └── admin.py            # Doctor approval (approve/reject)
 │   │
 │   └── services/
-│       ├── storage_service.py  # File storage handling
-│       ├── ml_service.py       # AI/ML inference (dummy)
-│       └── report_service.py   # PDF report generation
+│       ├── ml_service.py       # HuggingFace API integration
+│       ├── gemini_service.py   # Gemini AI recommendation generation
+│       ├── report_service.py   # PDF report generation (ReportLab)
+│       └── storage_service.py  # File storage (uploads, heatmaps, reports)
 │
 ├── storage/
-│   ├── uploads/             # Uploaded X-ray images
-│   ├── heatmaps/            # Generated heatmaps
-│   └── reports/             # Generated PDF reports
+│   ├── uploads/                # User-uploaded X-ray images
+│   ├── heatmaps/               # AI-generated heatmap overlays
+│   └── reports/                # Generated PDF diagnostic reports
 │
 ├── requirements.txt
 └── README.md
@@ -58,16 +60,16 @@ backend/
 
 - Python 3.9 or higher
 - pip (Python package manager)
+- PostgreSQL (optional — SQLite works for local dev)
 
 ### Installation
 
-1. **Clone the repository**
+1. **Navigate to backend**
    ```bash
-   git clone git@github.com:ziaur390/SPINEVISION-AI.git
-   cd SPINEVISION-AI/backend
+   cd backend
    ```
 
-2. **Create a virtual environment** (recommended)
+2. **Create virtual environment**
    ```bash
    python -m venv venv
    
@@ -83,171 +85,185 @@ backend/
    pip install -r requirements.txt
    ```
 
-4. **Run the server**
+4. **Configure environment** — Create a `.env` file:
+   ```env
+   DATABASE_URL=sqlite:///./spinevision.db
+   SECRET_KEY=your-super-secret-key-here
+   ACCESS_TOKEN_EXPIRE_MINUTES=1440
+   HF_SPACE_URL=https://ziaur390-spinevision-ml-api.hf.space
+   GEMINI_API_KEY=your-gemini-api-key
+   ```
+
+5. **Run the server**
    ```bash
    uvicorn app.main:app --reload
    ```
 
-5. **Access the API**
-   - API Documentation: http://localhost:8000/docs
-   - Alternative Docs: http://localhost:8000/redoc
+6. **Access the API**
+   - Swagger UI: http://localhost:8000/docs
+   - ReDoc: http://localhost:8000/redoc
 
 ## 📡 API Endpoints
 
 ### Authentication
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/auth/register` | Register a new user |
-| POST | `/auth/login` | Login and get JWT token |
-| GET | `/auth/me` | Get current user info |
+| POST | `/auth/register` | Register a new doctor account (pending approval) |
+| POST | `/auth/login` | Login → returns JWT access token |
+| GET | `/auth/me` | Get authenticated user profile |
 
-### Upload
+### Upload & Analysis
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/upload` | Upload X-ray image for analysis |
-| GET | `/upload/{id}` | Get upload status |
+| POST | `/upload` | Upload X-ray → triggers full AI pipeline |
+
+The upload endpoint performs the complete analysis pipeline:
+1. Saves the uploaded image
+2. Sends it to HuggingFace Space (DenseNet + YOLO)
+3. Generates heatmap from YOLO detections
+4. Calls Gemini API for clinical recommendation
+5. Generates PDF report
+6. Stores everything in the database
+7. Returns the complete result
 
 ### Results
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/result/{upload_id}` | Get analysis results |
-| GET | `/result/{upload_id}/heatmap` | Download heatmap |
+| GET | `/result/{upload_id}` | Full result (predictions, recommendation, URLs) |
+| GET | `/result/{upload_id}/heatmap` | Download heatmap image |
 | GET | `/result/{upload_id}/report` | Download PDF report |
 
 ### History
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/history` | Get upload history |
-| GET | `/history/statistics` | Get user statistics |
-| DELETE | `/history/{upload_id}` | Delete an upload |
+| GET | `/history?page=1&per_page=10` | Paginated upload history |
+| GET | `/history/statistics` | Total scans, normal/abnormal counts |
+| DELETE | `/history/{upload_id}` | Delete a scan and its files |
 
-## 🔐 Authentication
+### Admin
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/admin/pending` | List doctors awaiting approval |
+| POST | `/admin/approve/{user_id}` | Approve a doctor's account |
+| POST | `/admin/reject/{user_id}` | Reject and delete a doctor's account |
 
-The API uses JWT (JSON Web Tokens) for authentication:
+## 🔐 Authentication Flow
 
-1. Register or login to get an access token
-2. Include the token in the Authorization header:
-   ```
-   Authorization: Bearer <your_token>
-   ```
+1. Doctor registers → account created with `is_approved = 'false'`
+2. Admin approves the account from the Admin Panel
+3. Doctor logs in → receives JWT token
+4. All protected endpoints require: `Authorization: Bearer <token>`
 
-## 🧠 ML Model Integration
+## 🧠 ML Pipeline
 
-The current implementation uses a **dummy ML model** that generates realistic predictions. To integrate a real PyTorch model:
+### Analysis Flow
+```
+Upload → HuggingFace API → DenseNet-121 (classification)
+                         → YOLOv9 (detection + boxes)
+                         → Heatmap generation
+       → Gemini API     → Clinical recommendation
+       → ReportLab      → PDF report
+       → PostgreSQL     → Persist results
+```
 
-1. Place your trained model at `backend/models/spine_classifier.pt`
-
-2. Update `app/services/ml_service.py`:
-   - Modify `_load_model()` to load your PyTorch model
-   - Update `_preprocess_image()` for your model's input requirements
-   - Replace dummy predictions with actual model inference
-
-3. See the detailed integration notes at the bottom of `ml_service.py`
-
-### Dummy Model Output Format
+### Model Output Format
 ```json
 {
-  "overall": "Abnormal - High Confidence",
-  "model_version": "v0.1-dummy",
-  "confidence_score": 0.87,
+  "overall_classification": "Osteophytes",
+  "model_version": "v2.0 (DenseNet+YOLO HF)",
+  "confidence_score": 0.85,
+  "recommendation": "Clinical Summary: The AI analysis detected...",
   "predictions": [
     {
-      "label": "Disc Space Narrowing",
-      "description": "Reduced space between vertebral discs",
-      "probability": 0.87
+      "label": "Osteophytes (DenseNet)",
+      "probability": 0.85,
+      "description": "Whole-image classification by DenseNet121."
     },
     {
-      "label": "Degenerative Changes",
-      "probability": 0.63
+      "label": "Located: Osteophytes (YOLO)",
+      "probability": 0.78,
+      "description": "Region-level detection by YOLOv9."
     }
   ],
-  "heatmap_path": "storage/heatmaps/heatmap_xxx.png"
+  "heatmap_path": "storage/heatmaps/heatmap_xxx.png",
+  "report_path": "storage/reports/report_xxx.pdf"
 }
 ```
 
-## ⚙️ Configuration
-
-Environment variables (create a `.env` file):
-
-```env
-# Database (SQLite default, or PostgreSQL)
-DATABASE_URL=sqlite:///./spinevision.db
-# DATABASE_URL=postgresql://user:pass@localhost:5432/spinevision
-
-# JWT Configuration
-SECRET_KEY=your-super-secret-key-here
-ACCESS_TOKEN_EXPIRE_MINUTES=1440
-
-# Server
-DEBUG=true
-PORT=8000
-```
-
-## 🧪 Testing the API
-
-### Using cURL
-
-**Register a user:**
-```bash
-curl -X POST "http://localhost:8000/auth/register" \
-  -H "Content-Type: application/json" \
-  -d '{"email": "doctor@example.com", "password": "password123", "full_name": "Dr. Smith"}'
-```
-
-**Login:**
-```bash
-curl -X POST "http://localhost:8000/auth/login" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=doctor@example.com&password=password123"
-```
-
-**Upload an X-ray:**
-```bash
-curl -X POST "http://localhost:8000/upload" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -F "file=@/path/to/xray.png"
-```
+### Gemini Fallback
+If `GEMINI_API_KEY` is not set or the API is unreachable, the system automatically falls back to rule-based recommendations using hardcoded clinical guidelines per condition.
 
 ## 📋 Database Schema
 
-### User Table
-- `id` (UUID, Primary Key)
-- `email` (Unique, Indexed)
-- `hashed_password`
-- `full_name`
-- `role` (doctor/admin)
-- `created_at`
-- `is_active`
+### Users
+| Column | Type | Notes |
+|--------|------|-------|
+| id | UUID | Primary key |
+| email | VARCHAR | Unique, indexed |
+| hashed_password | VARCHAR | bcrypt hash |
+| full_name | VARCHAR | |
+| hospital_name | VARCHAR | Doctor's hospital |
+| medical_license | VARCHAR | License number |
+| role | ENUM | doctor / admin |
+| is_approved | VARCHAR(5) | 'true' / 'false' |
+| is_active | BOOLEAN | |
+| created_at | DATETIME | |
 
-### Upload Table
-- `id` (UUID, Primary Key)
-- `user_id` (Foreign Key → User)
-- `file_name`, `file_path`, `file_type`, `file_size`
-- `status` (uploaded/processing/done/failed)
-- `created_at`
+### Uploads
+| Column | Type | Notes |
+|--------|------|-------|
+| id | UUID | Primary key |
+| user_id | UUID | FK → Users |
+| file_name, file_path | VARCHAR | |
+| status | ENUM | uploaded / processing / done / failed |
+| overall_classification | VARCHAR | From DenseNet |
+| uploaded_at | DATETIME | |
 
-### Result Table
-- `id` (UUID, Primary Key)
-- `upload_id` (Foreign Key → Upload)
-- `model_version`
-- `overall_classification`
-- `predictions` (JSON)
-- `confidence_score`
-- `heatmap_path`, `report_path`
-- `processed_at`
+### Results
+| Column | Type | Notes |
+|--------|------|-------|
+| id | UUID | Primary key |
+| upload_id | UUID | FK → Uploads |
+| model_version | VARCHAR | e.g., "v2.0 (DenseNet+YOLO HF)" |
+| overall_classification | VARCHAR | |
+| predictions | JSON | Array of prediction objects |
+| confidence_score | VARCHAR | |
+| recommendation | TEXT | Gemini-generated clinical text |
+| heatmap_path | VARCHAR | Path to heatmap image |
+| report_path | VARCHAR | Path to PDF report |
+| processed_at | DATETIME | |
 
-## 🤝 Contributing
+## ⚙️ Configuration
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+All settings in `app/config.py`, loaded from environment variables:
 
-## 📄 License
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `DATABASE_URL` | Yes | `sqlite:///./spinevision.db` | Database connection string |
+| `SECRET_KEY` | Yes | — | JWT signing key |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | No | 1440 | Token expiry (24h) |
+| `HF_SPACE_URL` | Yes | — | HuggingFace Space inference URL |
+| `GEMINI_API_KEY` | No | — | Google Gemini API key (fallback if missing) |
 
-This project is developed as a Final Year Project for academic purposes.
+## 🧪 Testing
+
+```bash
+# Register
+curl -X POST "http://localhost:8000/auth/register" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "doctor@test.com", "password": "test123", "full_name": "Dr. Test", "hospital_name": "Test Hospital", "medical_license": "MED-001"}'
+
+# Login
+curl -X POST "http://localhost:8000/auth/login" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=doctor@test.com&password=test123"
+
+# Upload X-ray
+curl -X POST "http://localhost:8000/upload" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "file=@spine_xray.png"
+```
 
 ---
 
-**SPINEVISION-AI** - Making spine diagnostics smarter with AI 🦴✨
+**SPINEVISION-AI Backend** — Powering intelligent spine diagnostics 🦴⚡

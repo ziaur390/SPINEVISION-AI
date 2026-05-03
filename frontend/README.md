@@ -1,87 +1,135 @@
 # SPINEVISION-AI Frontend
 
-> React-based frontend for the AI Spine Disease Detection System
+> React + Vite frontend for the AI-Powered Spine Disease Detection System
 
 ## 🚀 Quick Start
 
 ```bash
-# Install dependencies
 npm install
-
-# Run development server
 npm run dev
 ```
 
-Access the app at: http://localhost:3000
+Access the app at: http://localhost:5173
 
 ## 📁 Project Structure
 
 ```
 frontend/
+├── public/
+│   ├── logo.png               # App icon / favicon
+│   └── vite.svg
 ├── src/
-│   ├── assets/              # Logo and images
+│   ├── assets/
+│   │   └── logo.png           # Logo used in components
 │   ├── components/
-│   │   ├── Navbar.jsx       # Top navigation
-│   │   ├── Sidebar.jsx      # Side navigation
-│   │   └── ProtectedRoute.jsx
+│   │   ├── Navbar.jsx         # Top nav bar (user menu, quick upload)
+│   │   ├── Sidebar.jsx        # Desktop sidebar + mobile bottom nav
+│   │   └── ProtectedRoute.jsx # JWT auth guard
+│   ├── context/
+│   │   └── AuthContext.jsx    # Global auth state (token, user)
 │   ├── pages/
-│   │   ├── Login.jsx        # Authentication
-│   │   ├── Dashboard.jsx    # Main dashboard
-│   │   ├── Upload.jsx       # X-ray upload
-│   │   ├── Processing.jsx   # Loading state
-│   │   ├── Result.jsx       # Analysis results
-│   │   └── History.jsx      # Upload history
+│   │   ├── Home.jsx           # Public landing page
+│   │   ├── Login.jsx          # Doctor login
+│   │   ├── Register.jsx       # Doctor registration
+│   │   ├── Dashboard.jsx      # Stats, quick actions, model info
+│   │   ├── Upload.jsx         # Drag & drop upload + grayscale check
+│   │   ├── Processing.jsx     # Analysis loading state
+│   │   ├── Result.jsx         # Predictions, heatmap, AI recommendation
+│   │   ├── History.jsx        # Paginated scan history table
+│   │   └── AdminDashboard.jsx # Doctor approval management
 │   ├── services/
-│   │   └── api.js           # Backend API calls
-│   ├── App.jsx              # Route configuration
-│   ├── main.jsx             # Entry point
-│   └── index.css            # Tailwind + custom styles
-├── index.html
-├── vite.config.js
+│   │   └── api.js             # Axios client + all API calls
+│   ├── App.jsx                # Route configuration
+│   ├── main.jsx               # Entry point
+│   └── index.css              # Tailwind CSS + custom animations
+├── index.html                 # HTML template + Google Fonts (Inter)
+├── vite.config.js             # Vite + React config
+├── tailwind.config.js
+├── netlify.toml               # Netlify SPA routing
 └── package.json
-```
-
-## 🔌 Backend Connection
-
-The frontend connects to the FastAPI backend at `http://localhost:8000`.
-
-Make sure the backend is running before starting the frontend:
-
-```bash
-# In backend folder
-uvicorn app.main:app --reload --port 8000
 ```
 
 ## 📱 Pages
 
-| Page | Route | Description |
-|------|-------|-------------|
-| Login | `/login` | User authentication |
-| Dashboard | `/dashboard` | Statistics and quick actions |
-| Upload | `/upload` | Drag & drop X-ray upload |
-| Processing | `/processing/:id` | Analysis loading |
-| Result | `/result/:id` | View predictions & heatmap |
-| History | `/history` | Past uploads and results |
+| Page | Route | Auth | Description |
+|------|-------|------|-------------|
+| Home | `/` | Public | Landing page with hero, features, How It Works, blog, about |
+| Login | `/login` | Public | Split-screen login with pending approval message |
+| Register | `/register` | Public | Doctor registration (name, hospital, license) |
+| Dashboard | `/dashboard` | 🔒 | Stats cards, recent scans, AI model info (v2.0) |
+| Upload | `/upload` | 🔒 | Drag & drop with grayscale validation |
+| Processing | `/processing/:id` | 🔒 | Animated loading while AI analyzes |
+| Result | `/result/:id` | 🔒 | Predictions, heatmap, Gemini recommendation, PDF |
+| History | `/history` | 🔒 | Sortable table with confidence bars, pagination |
+| Admin | `/admin` | 🔒 Admin | Approve/reject doctor registrations |
 
-## 🎨 Design
+## ✨ Key Features
 
-- **Color Scheme**: Teal/Cyan medical theme
-- **Typography**: Inter font family
-- **UI**: Clean, professional, medical-grade
-- **Animations**: Smooth fade-in transitions
+### Grayscale Validation
+Before uploading, the frontend draws the image to a hidden `<canvas>`, samples 200 random pixels, and checks if R/G/B channels diverge by more than a threshold. If >10% of pixels are colored, the upload is blocked — preventing users from uploading photos of cars, nature, etc.
+
+### Mobile Bottom Navigation
+On mobile devices (< md breakpoint), the desktop sidebar is hidden and replaced with a fixed bottom navigation bar (iOS/Android style) with Dashboard, Upload, and History tabs.
+
+### AI Recommendation Display
+The Result page shows a beautiful indigo-gradient card with the Gemini-generated clinical recommendation, including Clinical Summary, Detailed Findings, and Actionable Recommendations.
+
+### Doctor Approval Flow
+1. Doctor registers → sees "Pending Approval" message
+2. Admin sees new account in Admin Panel → clicks Approve
+3. Doctor can now login and use the platform
+
+## 🔌 Backend Connection
+
+The frontend connects to the FastAPI backend. Configure the API URL:
+
+```bash
+# .env file
+VITE_API_URL=http://localhost:8000
+```
+
+For production (Netlify), this is set to the Render backend URL.
+
+## 🎨 Design System
+
+| Element | Value |
+|---------|-------|
+| **Primary Colors** | Teal-600 → Cyan-600 gradient |
+| **Typography** | Inter (Google Fonts) |
+| **Border Radius** | rounded-xl / rounded-2xl |
+| **Shadows** | shadow-sm with shadow-teal-200 accents |
+| **Animations** | Smooth transitions, pulse, spin |
+| **Cards** | bg-white, border-gray-100, rounded-2xl |
 
 ## 🛠️ Technologies
 
-- React 18
-- Vite
-- Tailwind CSS
-- React Router DOM
-- Axios
+| Tech | Version | Purpose |
+|------|---------|---------|
+| React | 18 | UI framework |
+| Vite | 5 | Build tool + dev server |
+| Tailwind CSS | 3 | Utility-first styling |
+| React Router | 6 | Client-side routing |
+| Axios | 1.x | HTTP client |
 
 ## 📋 Available Scripts
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run preview  # Preview production build
+npm run dev       # Start dev server (port 5173)
+npm run build     # Production build → dist/
+npm run preview   # Preview production build locally
 ```
+
+## 🌐 Deployment (Netlify)
+
+The frontend auto-deploys from the GitHub repo. The `netlify.toml` handles SPA routing:
+
+```toml
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+---
+
+**SPINEVISION-AI Frontend** — Professional medical UI for intelligent diagnostics 🦴🎨
