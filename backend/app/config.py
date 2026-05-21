@@ -70,7 +70,11 @@ def get_settings() -> Settings:
     Returns cached settings instance.
     Using lru_cache ensures we only load settings once.
     """
-    return Settings()
+    settings = Settings()
+    # Correct postgres protocol to postgresql for SQLAlchemy compatibility
+    if settings.DATABASE_URL.startswith("postgres://"):
+        settings.DATABASE_URL = settings.DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    return settings
 
 
 def ensure_storage_directories():
