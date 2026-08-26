@@ -111,8 +111,6 @@ async def get_current_user(
         raise credentials_exception
     if user.is_active != "true":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User account is deactivated")
-    if user.role != UserRole.ADMIN and user.is_approved != "true":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account pending admin approval.")
     
     return user
 
@@ -132,7 +130,7 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
         hospital_name=user_data.hospital_name,
         medical_license=user_data.medical_license,
         is_active="true",
-        is_approved="false" # Admins must approve this
+        is_approved="true" # Auto-approved — no admin review required
     )
     
     db.add(new_user)
@@ -154,9 +152,6 @@ async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depen
     
     if user.is_active != "true":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User account is deactivated")
-        
-    if user.role != UserRole.ADMIN and user.is_approved != "true":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account pending admin approval.")
     
     access_token = create_access_token(data={"sub": user.id, "email": user.email})
     
