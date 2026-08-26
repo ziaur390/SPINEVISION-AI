@@ -20,7 +20,8 @@ if settings.DATABASE_URL.startswith("sqlite"):
 engine = create_engine(
     settings.DATABASE_URL,
     connect_args=connect_args,
-    echo=settings.DEBUG  # Log SQL queries in debug mode
+    echo=settings.DEBUG,  # Log SQL queries in debug mode
+    pool_pre_ping=True,  # Reconnect stale connections (Neon/Render auto-suspend)
 )
 
 # Create session factory

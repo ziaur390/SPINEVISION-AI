@@ -74,6 +74,10 @@ def get_settings() -> Settings:
     # Correct postgres protocol to postgresql for SQLAlchemy compatibility
     if settings.DATABASE_URL.startswith("postgres://"):
         settings.DATABASE_URL = settings.DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    # Managed Postgres providers (Neon, Supabase, Render) require SSL
+    if settings.DATABASE_URL.startswith("postgresql://") and "sslmode=" not in settings.DATABASE_URL:
+        separator = "&" if "?" in settings.DATABASE_URL else "?"
+        settings.DATABASE_URL += f"{separator}sslmode=require"
     return settings
 
 
